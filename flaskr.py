@@ -12,5 +12,15 @@ def connet_db():
     rv.row_factory = sqlite3.Row
     return rv
 
+
+def get_db():
+    """
+    Opens a new database connection if there is none yet for  the current
+    application context.
+    """
+    if not hasattr(g, 'sqlite_db'):
+        g.sqlite_db = connet_db()
+    return g.sqlite_db
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
