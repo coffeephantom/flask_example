@@ -37,7 +37,15 @@ def init_db():
         db = get_db()
         with app.open_resource('shema.sql', mode='r') as f:
             db.cursor().executerscript(f.read())
-        db.commit()
+        db.commit
+
+
+@app.route('/')
+def show_entries():
+    cur = g.db.execute('select title, text from entries order by id desc')
+    entries = [dict(title=row[0], text=row[0]) for row in cur.fetchall()]
+    return render_template('show_entries.html', entries=entries)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
