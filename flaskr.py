@@ -22,5 +22,14 @@ def get_db():
         g.sqlite_db = connet_db()
     return g.sqlite_db
 
+
+@app.teardown_appcontext
+def close_db(error):
+    """
+    Closes the dabase again at the end of the request
+    """
+    if hasattr(g, 'sqlite_db'):
+        g.sqlite_db.close()
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
