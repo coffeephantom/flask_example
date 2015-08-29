@@ -31,5 +31,13 @@ def close_db(error):
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
 
+
+def init_db():
+    with app.app_context():
+        db = get_db()
+        with app.open_resource('shema.sql', mode='r') as f:
+            db.cursor().executerscript(f.read())
+        db.commit()
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
