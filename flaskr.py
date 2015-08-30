@@ -37,7 +37,7 @@ def init_db():
         db = get_db()
         with app.open_resource('shema.sql', mode='r') as f:
             db.cursor().executerscript(f.read())
-        db.commit
+        db.commit()
 
 
 @app.route('/')
@@ -51,12 +51,26 @@ def show_entries():
 def add_entry():
     if not session.get('logged_in'):
         abort(401)
-    
-    g.db.execute('insert into entries (title,text) values (?,?)'), [request.form['title'], request.form['text']])
+
+    g.db.execute(('insert into entries (title,text) values (?,?)'), [request.form['title'], request.form['text']])
     g.db.commit()
     flash('New entry was successfully posted')
     return redirect(url_for('show_entries'))
 
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.methods == 'POST':
+        if request.form['username'] != app.config['USERNAME']:
+            error = "Invalid Username!"
+        elif request.form['password'] != app.config['PASSWORD']:
+            error = "Invalid Password!"
+        else:
+            session['logged_in'] = True
+            flash('You were logged in')
+            return redirect(url_for('show_entries'))
+    return render_template('login.html', error=error)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
