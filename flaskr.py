@@ -1,12 +1,13 @@
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort, \
     render_template, flash
+from contextlib import closing
 
 
 app = Flask(__name__)
 
 # app configure
-DATABASE = '/home/coffeephantom/workspace/python/flaskr/static/db'
+DATABASE = '/home/coffeephantom/workspace/python/flaskr/static/db/flaskr.db'
 DEBUG = True
 SECRET_KEY = ',\xbc\x9b\x96\xe6`\xfcI\xc8_\xca\x82\n\xa7"\x8dWe\xe38\xa8\xd1\x1c\xbf'
 USERNAME = 'admin'
@@ -18,7 +19,7 @@ app.config.from_object(__name__)
 
 def connet_db():
     """Connects to the specific database."""
-    rv = sqlite3.connect(DATABASE)
+    rv = sqlite3.connect(app.config['DATABASE'])
     # rv.row_factory = sqlite3.Row
     return rv
 
@@ -43,9 +44,7 @@ def close_db(error):
 
 
 def init_db():
-    #pdb.set_trace()
-    with app.app_context():
-        db = get_db()
+    with closing(connect_db()) as db:
         with app.open_resource('schema.sql', mode='r') as f:
             db.cursor().executescript(f.read())
         db.commit()
