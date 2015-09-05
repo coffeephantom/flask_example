@@ -31,14 +31,9 @@ def init_db():
         db.commit()
 
 
-def get_db():
-    """
-    Opens a new database connection if there is none yet for  the current
-    application context.
-    """
-    if not hasattr(g, 'db'):
-        g.db = connet_db()
-    return g.db
+@app.before_request
+def before_request():
+    g.db = connect_db()
 
 
 @app.teardown_appcontext
