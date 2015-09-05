@@ -36,13 +36,11 @@ def before_request():
     g.db = connect_db()
 
 
-@app.teardown_appcontext
-def close_db(error):
-    """
-    Closes the dabase again at the end of the request
-    """
-    if hasattr(g, 'db'):
-        g.db.close()
+@app.teardown_request
+def teardown_request(exception):
+    db = getattr(g, 'db', None)
+    if db is not None:
+        db.close()
 
 
 
