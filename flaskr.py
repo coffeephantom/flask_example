@@ -7,7 +7,7 @@ from contextlib import closing
 app = Flask(__name__)
 
 # app configure
-DATABASE = '/home/coffeephantom/workspace/python/flaskr/static/db/flaskr.db'
+DATABASE = '/Users/coffeephantom/Documents/DevL/Python/flask_example/static/db/flaskr.db'
 DEBUG = True
 SECRET_KEY = ',\xbc\x9b\x96\xe6`\xfcI\xc8_\xca\x82\n\xa7"\x8dWe\xe38\xa8\xd1\x1c\xbf'
 USERNAME = 'admin'
@@ -41,9 +41,6 @@ def teardown_request(exception):
     db = getattr(g, 'db', None)
     if db is not None:
         db.close()
-
-
-
 
 
 @app.route('/')
@@ -88,4 +85,4 @@ def logout():
 
 if __name__ == '__main__':
     init_db()
-    app.run(host='0.0.0.0', debug=True)
+    app.run()
